@@ -1,38 +1,37 @@
 package exemples
 
-import java.io.BufferedReader
 import java.io.File
-import java.io.InputStreamReader
 import java.util.*
 
 fun main(args: Array<String>) {
     val sc = Scanner(System.`in`)
-    var f = File("/")
+    var f = File.listRoots()[0]
     llistaDirectori(f)
 
-    var n: Int? = null
+    println("Tria un directori per anar, 0 per anar al pare i -1 per a acabar")
+    var num = sc.nextInt()
 
-    while (n != -1) {
+    while (num != -1) {
+        if (num == 0) {
+            if (f != File.listRoots()[0]) {
+                f = f.parentFile
+                llistaDirectori(f)
+            } else println("ya estas en la raiz")
+        } else if (num <= f.listFiles().size && num > 0) {
+            if (f.listFiles().sorted()[num - 1] != null) {
+                if (f.listFiles().sorted()[num - 1].canRead()) {
+                    if (f.listFiles().sorted()[num - 1].isDirectory) {
+                        f = f.listFiles().sorted()[num - 1]
+                        llistaDirectori(f)
+                    } else println("No és un directori")
+                } else println("No tienes acceso")
+            } else println("El directori es null")
+        } else println("Mete un numero dentro del rango")
         println("Tria un directori per anar, 0 per anar al pare i -1 per a acabar")
-        n = sc.nextInt()
-        if (n == -1) {
-            break
-        } else if (n == 0) {
-            f = f.parentFile
-            llistaDirectori(f)
-        } else if (n < f.listFiles().size && n > 0) {
-            f = f.listFiles().sorted()[n - 1]
-            if (f.exists()) {
-                if (f.isDirectory()) {
-                    llistaDirectori(f)
-                } else
-                    println("No és un directori")
-            } else
-                println("No existeix el directori")
-        } else println("Mete otra opcion")
+        num = sc.nextInt()
     }
-
 }
+
 
 fun llistaDirectori(f: File) {
     val s = "Llista de fitxers i directoris del directori " + f.getCanonicalPath()
